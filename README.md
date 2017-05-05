@@ -1,4 +1,4 @@
-# adapt-dragndrop
+# adapt-sortable
 
 **Sortable** is a *question component* for the Adapt Framework created by Dan storey.
 
