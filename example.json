@@ -1,0 +1,37 @@
+{
+    "_type": "component",
+    "_component": "sortable",
+    "_classes": "",
+    "_layout": "full",
+    "_attempts": 2,
+    "_questionWeight": 20,
+    "_canShowModelAnswer": true,
+    "_canShowFeedback": false,
+    "title": "Sortable",
+    "displayTitle": "Sortable",
+    "body": "",
+    "_isRandom": true,
+    "instruction": "Rank in order the following numbers",
+    "_items": [
+        {
+            "text": "One",
+            "_startPosition": 3
+        },
+        {
+            "text": "Two",
+            "_startPosition": 4
+        },
+        {
+            "text": "Three",
+            "_startPosition": 1
+        },
+        {
+            "text": "Four",
+            "_startPosition": 5
+        },
+        {
+            "text": "Five",
+            "_startPosition": 2
+        }
+    ]
+}

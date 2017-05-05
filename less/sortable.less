@@ -1,0 +1,78 @@
+.sortable-widget {
+	&.submitted {
+		.sortable-item {
+			background-color: @item-color-disabled;
+		}
+	}
+
+	&.disabled {
+		.sortable-item {
+			cursor: default;
+		}
+	}
+
+	&.show-user-answer {
+		.incorrect {
+			.sortable-incorrect-icon {
+				display: block;
+			}
+		}
+		.correct {
+			.sortable-correct-icon {
+				display: block;
+			}
+		}
+	}
+
+	&.show-correct-answer {
+		.sortable-select-icon {
+			display: none;
+		}
+		.correct .sortable-correct-icon {
+			display: block;
+		}
+	}
+
+	.sortable-item-state {
+		background: none;
+		position: absolute;
+		right: (@icon-size/2);
+		.dir-rtl & {
+			right: inherit;
+			left: (@icon-size/2);
+		}
+		width: @icon-size;
+		height: @icon-size;
+		top: 50%;
+		margin-top: -(@icon-size/2);
+		z-index: 0;
+	}
+
+	.sortable-correct-icon {
+		color: @icon-correct-color;
+		display: none;
+	}
+
+	.sortable-incorrect-icon {
+		color: @icon-incorrect-color;
+		display: none;
+	}
+}
+
+
+
+.sortable-items {
+	position: relative;
+}
+
+.sortable-item {
+	position: relative;
+	padding: 15px;
+	background: @primary-color;
+	color: #ffffff;
+	cursor: move;
+}
+
+.sortable-item-text {
+  padding-right: 30px;
+}

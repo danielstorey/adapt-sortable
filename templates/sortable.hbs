@@ -1,0 +1,21 @@
+<div class="sortable-inner component-inner">
+    {{> component this}}
+    <div class="sortable-widget component-widget {{#unless _isEnabled}} disabled {{#if _isComplete}} complete submitted user {{#if _isCorrect}}correct{{/if}} {{/if}} {{/unless}}">
+
+        <div class="sortable-container">
+            <div class="sortable-items">
+                {{#each _itemsReordered}}
+                    <div class="sortable-item">
+                        <div class="sortable-item-text">{{text}}</div>
+                        <div class="sortable-item-state">
+                            <div class="sortable-icon sortable-correct-icon icon icon-tick"></div>
+                            <div class="sortable-icon sortable-incorrect-icon icon icon-cross"></div>
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        </div>
+
+        <div class="buttons"></div>
+    </div>
+</div>
