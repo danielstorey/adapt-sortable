@@ -6,7 +6,7 @@ A learner must drag listed items into the correct order.
 
 [**Click here for an interactive demo**](https://danielstorey.github.io/adapt-demo-course/#/id/co-main)
 
-##Installation
+## Installation
 
 
 

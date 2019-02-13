@@ -1,14 +1,15 @@
 {
   "name": "adapt-sortable",
   "repository": "git://github.com/danielstorey/adapt-sortable.git",
-  "framework": "~2.0.0",
-  "version": "1.0.0",
+  "framework": ">=2.0.0",
+  "version": "1.1.0",
   "homepage": "https://github.com/danielstorey/adapt-sortable",
   "authors": [
     "Dan Storey <danielstorey@gmail.com>"
   ],
-  "description": "Drag to sort a list of items into the right order",
+  "description": "A question component which requires the user to drag and drop a number of items into the correct order",
   "displayName": "Sortable",
+  "component" : "sortable",
   "main": "/js/adapt-sortable.js",
   "keywords": [
     "adapt-plugin",
