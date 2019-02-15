@@ -1,241 +1,248 @@
-define(function(require) {
+define([
+    'core/js/adapt',
+    'core/js/views/questionView',
+    'libraries/jquery-ui.min',
+    'libraries/jquery.ui.touch-punch'
+], function(Adapt, QuestionView) {
 
-	var Adapt           = require('coreJS/adapt');
-	var QuestionView    = require('coreViews/questionView');
-	var JQueryUI        =  require('./jquery-ui.min');
-	var TouchPunch      = require('./jquery.ui.touch-punch');
+    var Sortable = QuestionView.extend({
 
-	var Sortable = QuestionView.extend({
+        events: {
+            'mousedown .sortable-item': 'toggleSortableClass',
+            'mouseup .sortable-item': 'toggleSortableClass',
+            'sortstop .sortable-items': 'onSortStop'
+        },
 
-		events: {
-			"sortstop .sortable-items": "onSortStop"
-		},
+        /************************************** SETUP **************************************/
 
-		/************************************** SETUP METHODS **************************************/
+        setupQuestion: function() {
+            var items = this.model.get('_items');
+            this.model.set('_correctAnswer', _.pluck(items, 'text'));
+            this.setupItemsOrder();
+        },
 
-		setupQuestion: function() {
-			var items = this.model.get("_items");
-			this.model.set("_correctAnswer", _.pluck(items, "text"));
-			this.setupItemsOrder();
-		},
+        onQuestionRendered: function() {
+            this.setupSortable();
+            this.restoreUserAnswer();
+            this.setReadyStatus();
+        },
 
-		onQuestionRendered: function() {
-			this.setupSortable();
-			this.restoreUserAnswer();
-			this.setReadyStatus();
-		},
+        setupItemsOrder: function() {
+            var items = this.model.get('_items');
+            _.each(items, function(item, i) {
+                item._correctPosition = i;
+            });
+            var itemsReordered = this.model.get('_isRandom') ? _.shuffle(items) : _.sortBy(items, '_startPosition');
+            this.model.set('_itemsReordered', itemsReordered);
+        },
 
-		setupItemsOrder: function() {
-			var items = this.model.get("_items");
-			_.each(items, function(item, i) {
-				item._correctPosition = i;
-			});
-			var itemsReordered = this.model.get("_isRandom") ? _.shuffle(items) : _.sortBy(items, "_startPosition");
-			this.model.set("_itemsReordered", itemsReordered);
-		},
+        setupSortable: function() {
+            if (!this.model.get('_isEnabled')) return;
 
-		setupSortable : function () {
-			if (!this.model.get("_isEnabled")) return;
+            this.$('.sortable-items').sortable({
+                containment: 'parent',
+                axis: 'y',
+                tolerance: 'pointer'
+            });
+        },
 
-			this.$(".sortable-items").sortable({
-				containment: "parent",
-				axis: "y",
-				tolerance: "pointer"
-			});
-		},
+        /************************************** HELPERS **************************************/
 
-		/************************************** HELPER METHODS **************************************/
+        fixContainerHeight: function(force) {
+            if (!this._isHeightFixed || force) {
+                var $items = this.$('.sortable-items');
+                $items.height($items.height());
+                this._isHeightFixed = true;
+            }
+        },
 
-		fixContainerHeight: function(force) {
-			if (!this._isHeightFixed || force) {
-				var $items = this.$(".sortable-items");
-				$items.height($items.height());
-				this._isHeightFixed = true;
-			}
-		},
+        getSortableItemByIndex: function(itemIndex) {
+            var $items = this.$('.sortable-item');
+            var items = this.model.get('_items');
+            for (var i = 0; i < $items.length; i++) {
+                var text = $items.eq(i).children('.sortable-item-text').html();
+                if (items[itemIndex].text === text) return $items.eq(i);
+            }
+        },
 
-		getSortableItemByIndex: function(itemIndex) {
-			var $items = this.$(".sortable-item");
-			var items = this.model.get("_items");
-			for (var i = 0; i < $items.length; i++) {
-				var text = $items.eq(i).children(".sortable-item-text").html();
-				if (items[itemIndex].text === text) return $items.eq(i);
-			}
-		},
+        getSortableItemByText: function(text) {
+            var $items = this.$('.sortable-item');
+            for (var i = 0; i < $items.length; i++) {
+                var sortableText = $items.eq(i).children('.sortable-item-text').html();
+                if (sortableText === text) return $items.eq(i);
+            }
+        },
 
-		getSortableItemByText: function(text) {
-			var $items = this.$(".sortable-item");
-			for (var i = 0; i < $items.length; i++) {
-				var sortableText = $items.eq(i).children(".sortable-item-text").html();
-				if (sortableText === text) return $items.eq(i);
-			}
-		},
+        moveSortable: function($el, top) {
 
-		moveSortable: function($el, top) {
+        },
 
-		},
+        /************************************** HANDLERS **************************************/
 
-		/************************************** SORTABLE METHODS **************************************/
+        toggleSortableClass: function(e) {
 
-		onSortStop: function() {
-			this._isChanged = true;
-		},
+            $(e.currentTarget).toggleClass('ui-sortable-helper', e.type === 'mousedown');
+        },
 
-		/************************************** QUESTION METHODS **************************************/
+        onSortStop: function() {
+            this._isChanged = true;
+        },
 
-		canSubmit: function() {
-			return this._isChanged;
-		},
+        /************************************** QUESTION METHODS **************************************/
 
-		markAnswers: function() {
-			var userAnswer = this.model.get("_userAnswer");
-			_.each(this.model.get("_items"), function(item, i) {
-				item._isCorrect = userAnswer[i] === i;
-			});
-		},
+        canSubmit: function() {
+            return this._isChanged;
+        },
 
-		showMarking: function() {
-			if (!this.model.get("_canShowMarking")) return;
+        markAnswers: function() {
+            var userAnswer = this.model.get('_userAnswer');
+            _.each(this.model.get('_items'), function(item, i) {
+                item._isCorrect = userAnswer[i] === i;
+            });
+        },
 
-			_.each(this.model.get("_items"), function(item, i) {
-				var $item = this.getSortableItemByIndex(i);
-				$item.removeClass("correct incorrect").addClass(item._isCorrect ? "correct" : "incorrect");
-			}, this);
-		},
+        showMarking: function() {
+            if (!this.model.get('_canShowMarking')) return;
 
-		isCorrect: function() {
-			this.markAnswers();
+            _.each(this.model.get('_items'), function(item, i) {
+                var $item = this.getSortableItemByIndex(i);
+                $item.removeClass('correct incorrect').addClass(item._isCorrect ? 'correct' : 'incorrect');
+            }, this);
+        },
 
-			// do we have any _isCorrect == false?
-			return !_.contains(_.pluck(this.model.get("_items"),"_isCorrect"), false);
-		},
+        isCorrect: function() {
+            this.markAnswers();
 
-		resetQuestion: function() {
-			var answer = _.map(this.model.get("_itemsReordered"), function(item) {
-				return item._correctPosition;
-			});
-			this.showAnswer(answer, true);
-			this._isReset = true;
-		},
+            // do we have any _isCorrect == false?
+            return !_.contains(_.pluck(this.model.get('_items'), '_isCorrect'), false);
+        },
 
-		restoreUserAnswer: function() {
+        resetQuestion: function() {
+            var answer = _.map(this.model.get('_itemsReordered'), function(item) {
+                return item._correctPosition;
+            });
+            this.showAnswer(answer, true);
+            this._isReset = true;
+        },
 
-			if (!this.model.get("_isSubmitted")) return;
+        restoreUserAnswer: function() {
 
-			var userAnswer = this.model.get("_userAnswer");
+            if (!this.model.get('_isSubmitted')) return;
 
-			_.each(this.model.get("_items"), function(item, i) {
-				item.userAnswer = userAnswer[i];
-			});
+            var userAnswer = this.model.get('_userAnswer');
 
-			this.setQuestionAsSubmitted();
-			this.markQuestion();
-			this.setScore();
-			this.showMarking();
-			this.setupFeedback();
-		},
+            _.each(this.model.get('_items'), function(item, i) {
+                item.userAnswer = userAnswer[i];
+            });
 
-		onHideCorrectAnswerClicked: function() {
-			if (this._isAnimating) return;
+            this.setQuestionAsSubmitted();
+            this.markQuestion();
+            this.setScore();
+            this.showMarking();
+            this.setupFeedback();
+        },
 
-			this.setQuestionAsHideCorrect();
-			this._runModelCompatibleFunction("updateButtons");
-			this.showAnswer(this.model.get("_userAnswer"), true);
-		},
+        onHideCorrectAnswerClicked: function() {
+            if (this._isAnimating) return;
 
-		onShowCorrectAnswerClicked: function() {
-			if (this._isAnimating) return;
+            this.setQuestionAsHideCorrect();
+            this._runModelCompatibleFunction('updateButtons');
+            this.showAnswer(this.model.get('_userAnswer'), true);
+        },
 
-			var answer = _.map(this.model.get("_items"), function(item, i) {
-				return i;
-			});
+        onShowCorrectAnswerClicked: function() {
+            if (this._isAnimating) return;
 
-			this.setQuestionAsShowCorrect();
-			this._runModelCompatibleFunction("updateButtons");
-			this.showAnswer(answer, true);
-		},
+            var answer = _.map(this.model.get('_items'), function(item, i) {
+                return i;
+            });
 
-		showAnswer: function(answer, animate) {
-			if (this._isAnimating || (this.model.get("_isEnabled") && !this._isReset)) return;
-			this.fixContainerHeight();
+            this.setQuestionAsShowCorrect();
+            this._runModelCompatibleFunction('updateButtons');
+            this.showAnswer(answer, true);
+        },
 
-			var $container = this.$(".sortable-items");
-			var $items = this.$(".sortable-item");
-			var w = $items.width();
-			var sortableTop = 0;
-			var animationTime = animate ? 400 : 0;
-			var timeout = 10;
-			var zIndex = 100;
-			var offsets = _.map($items, function(el, i) {
-				return $items.eq(i).offset();
-			});
+        showAnswer: function(answer, animate) {
+            if (this._isAnimating || (this.model.get('_isEnabled') && !this._isReset)) return;
+            this.fixContainerHeight();
 
-			this._isAnimating = true;
+            var $container = this.$('.sortable-items');
+            var $items = this.$('.sortable-item');
+            var w = $items.width();
+            var sortableTop = 0;
+            var animationTime = animate ? 400 : 0;
+            var timeout = 10;
+            var zIndex = 100;
+            var offsets = _.map($items, function(el, i) {
+                return $items.eq(i).offset();
+            });
 
-			_.each($items, function(el, i) {
-				var $el = $(el);
-				var offset = offsets[i];
-				var $item = this.getSortableItemByIndex(answer[i]);
-				el.style.position = "absolute";
-				el.style.width = w + "px";
-				$el.offset(offset);
-				$container.append($item);
-				zIndex --;
-				$item.css({zIndex: zIndex});
-				setTimeout(function() {
-					$item.animate({top: sortableTop}, animationTime);
-					sortableTop += $item.outerHeight(true);
+            this._isAnimating = true;
 
-					if (i === $items.length - 1) {
+            _.each($items, function(el, i) {
+                var $el = $(el);
+                var offset = offsets[i];
+                var $item = this.getSortableItemByIndex(answer[i]);
+                el.style.position = 'absolute';
+                el.style.width = w + 'px';
+                $el.offset(offset);
+                $container.append($item);
+                zIndex--;
+                $item.css({ zIndex: zIndex });
+                setTimeout(function() {
+                    $item.animate({ top: sortableTop }, animationTime);
+                    sortableTop += $item.outerHeight(true);
 
-					}
-				}, timeout);
-			}, this);
+                    if (i === $items.length - 1) {
 
-			setTimeout(function() {
-				$items.attr("style", null);
-				this._isAnimating = false;
-			}.bind(this), 450);
-		},
+                    }
+                }, timeout);
+            }, this);
 
-		storeUserAnswer: function() {
-			var correctAnswer = this.model.get("_correctAnswer");
-			var userAnswer = _.map(this.$(".sortable-item"), function(item) {
-				return correctAnswer.indexOf($(item).children(".sortable-item-text").html());
-			});
+            setTimeout(function() {
+                $items.attr('style', null);
+                this._isAnimating = false;
+            }.bind(this), 450);
+        },
 
-			_.each(this.model.get("_items"), function(item, i) {
-				item.userAnswer = userAnswer[i];
-			});
+        storeUserAnswer: function() {
+            var correctAnswer = this.model.get('_correctAnswer');
+            var userAnswer = _.map(this.$('.sortable-item'), function(item) {
+                return correctAnswer.indexOf($(item).children('.sortable-item-text').html());
+            });
 
-			this.model.set("_userAnswer", userAnswer);
-		},
+            _.each(this.model.get('_items'), function(item, i) {
+                item.userAnswer = userAnswer[i];
+            });
 
-		setScore: function() {
-			var userAnswer = this.model.get("_userAnswer");
-			var numItems = this.model.get("_items").length;
-			var maxScore = numItems * numItems - numItems;
-			var userScore = maxScore;
+            this.model.set('_userAnswer', userAnswer);
+        },
 
-			_.each(userAnswer, function(userIndex, i) {
-				var penalty = userIndex - i;
-				if (penalty < 0) penalty *= -1;
-				userScore -= penalty;
-			}, this);
+        setScore: function() {
+            var userAnswer = this.model.get('_userAnswer');
+            var numItems = this.model.get('_items').length;
+            var maxScore = numItems * numItems - numItems;
+            var userScore = maxScore;
 
-			var totalScore = (userScore / maxScore) * this.model.get("_questionWeight");
-			this.model.set('_score', totalScore);
-		},
+            _.each(userAnswer, function(userIndex, i) {
+                var penalty = userIndex - i;
+                if (penalty < 0) penalty *= -1;
+                userScore -= penalty;
+            }, this);
 
-		disableQuestion: function() {
-			this.$(".sortable-items").sortable("disable");
-		},
+            var totalScore = (userScore / maxScore) * this.model.get('_questionWeight');
+            this.model.set('_score', totalScore);
+        },
 
-		enableQuestion: function() {
-			this.$(".sortable-items").sortable("enable");
-		}
-	});
+        disableQuestion: function() {
+            this.$('.sortable-items').sortable('disable');
+        },
 
-	Adapt.register("sortable", Sortable);
+        enableQuestion: function() {
+            this.$('.sortable-items').sortable('enable');
+        }
+    });
+
+    Adapt.register('sortable', Sortable);
 
 });
