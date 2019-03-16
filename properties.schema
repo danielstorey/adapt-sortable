@@ -44,7 +44,7 @@
                         "title": "Start Position",
                         "inputType": {"type": "Number"},
                         "validators": ["number"],
-                        "help": "Set the starting position of this item. If _isRandom is set to true this value will be ignored"
+                        "help": "Set the starting position of this item. If items are randomised this value will be ignored"
                     }
                 }
             }
@@ -65,7 +65,7 @@
             "title": "Display Model Answer",
             "inputType": {"type": "Boolean", "options": [true, false]},
             "validators": [],
-            "help": "Select 'true' to allow the user to view the 'model answer' should they answer the question incorrectly"
+            "help": "Allow the user to view the 'model answer' if they answer the question incorrectly?"
         },
         "_canShowFeedback": {
             "type":"boolean",
@@ -74,7 +74,7 @@
             "title": "Display Feedback",
             "inputType": {"type": "Boolean", "options": [true, false]},
             "validators": [],
-            "help": "Select 'true' to allow the user to view feedback on their answer"
+            "help": ""
         },
         "_shouldDisplayAttempts": {
             "type":"boolean",
@@ -83,16 +83,16 @@
             "title": "Display Attempts",
             "inputType": {"type": "Boolean", "options": [true, false]},
             "validators": [],
-            "help": "Select 'true' to display the numbers of attempts left"
+            "help": "Display the number of attempts remaining?"
         },
         "_isRandom": {
             "type":"boolean",
             "required":false,
-            "default": false,
+            "default": true,
             "title": "Randomised Items",
             "inputType": {"type": "Boolean", "options": [true, false]},
             "validators": [],
-            "help": "If set to 'true', all items will be randomised"
+            "help": "If enabled, all items will be randomised. Only disable this option if you intend to manually set the start position of each individual item"
         },
         "_recordInteraction": {
             "type":"boolean",
@@ -101,7 +101,7 @@
             "title": "Record interaction",
             "inputType": {"type": "Boolean", "options": [true, false]},
             "validators": [],
-            "help": "If set to 'true', the user's answer(s) will be recorded to cmi.interactions on the LMS (where supported)."
+            "help": "If disabled, recording the user's answer(s) to this question to cmi.interactions on the LMS will be disabled for this component only"
         },
         "_questionWeight": {
             "type":"number",

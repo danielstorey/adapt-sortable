@@ -179,6 +179,8 @@ define([
 
             this._isAnimating = true;
 
+            var transformFn = this.model.get('_isReady') ? 'animate' : 'css';
+
             _.each($items, function(el, i) {
                 var $el = $(el);
                 var offset = offsets[i];
@@ -190,12 +192,8 @@ define([
                 zIndex--;
                 $item.css({ zIndex: zIndex });
                 setTimeout(function() {
-                    $item.animate({ top: sortableTop }, animationTime);
+                    $item[transformFn]({ top: sortableTop }, animationTime);
                     sortableTop += $item.outerHeight(true);
-
-                    if (i === $items.length - 1) {
-
-                    }
                 }, timeout);
             }, this);
 
