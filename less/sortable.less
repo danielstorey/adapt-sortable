@@ -59,10 +59,14 @@
 	}
 }
 
-
+.sortable-container {
+  overflow-y: auto;
+}
 
 .sortable-items {
 	position: relative;
+  overflow-y: hidden;
+  overflow-x: hidden;
 }
 
 .sortable-item {
@@ -78,11 +82,6 @@
 
 	&.ui-sortable-helper {
 		box-shadow: 0 3px 10px rgba(0,0,0,0.5);
-		-webkit-transform: scale(1.01, 1.01);
-		-moz-transform: scale(1.01, 1.01);
-		-ms-transform: scale(1.01, 1.01);
-		-o-transform: scale(1.01, 1.01);
-		transform: scale(1.01, 1.01);
 	}
 }
 
