@@ -1,4 +1,4 @@
-<div class="sortable-inner component-inner">
+<div class="sortable-inner component-inner outside-test">
     {{> component this}}
     <div class="sortable-widget component-widget {{#unless _isEnabled}} disabled {{#if _isComplete}} complete submitted user {{#if _isCorrect}}correct{{/if}} {{/if}} {{/unless}}">
 
@@ -15,7 +15,6 @@
                 {{/each}}
             </div>
         </div>
-
-        <div class="buttons"></div>
     </div>
+    <div class="btn__container"></div>
 </div>
