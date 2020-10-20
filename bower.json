@@ -1,11 +1,12 @@
 {
   "name": "adapt-sortable",
   "repository": "git://github.com/danielstorey/adapt-sortable.git",
-  "framework": ">=2.0.1",
-  "version": "1.1.2",
+  "framework": ">=5.0.0",
+  "version": "1.1.3",
   "homepage": "https://github.com/danielstorey/adapt-sortable",
   "authors": [
-    "Dan Storey <danielstorey@gmail.com>"
+    "Dan Storey <danielstorey@gmail.com>",
+    "Samara Dionne <samaradionne@gmail.com>"
   ],
   "description": "A question component which requires the user to drag and drop a number of items into the correct order",
   "displayName": "Sortable",

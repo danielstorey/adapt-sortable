@@ -1,7 +1,7 @@
 .sortable-widget {
 	&.submitted {
 		.sortable-item {
-			background-color: @item-color-disabled;
+			background-color: @disabled;
 		}
 	}
 
@@ -49,27 +49,31 @@
 	}
 
 	.sortable-correct-icon {
-		color: @icon-correct-color;
+		color: @validation-success;
 		display: none;
 	}
 
 	.sortable-incorrect-icon {
-		color: @icon-incorrect-color;
+		color: @validation-error;
 		display: none;
 	}
 }
 
-
+.sortable-container {
+  overflow-y: auto;
+}
 
 .sortable-items {
 	position: relative;
+  overflow-y: hidden;
+  overflow-x: hidden;
 }
 
 .sortable-item {
 	position: relative;
 	padding: 15px;
-	margin-bottom: @item-margin-bottom;
-	background: @primary-color;
+	margin-bottom: @item-margin;
+	background: @blueDark;
 	color: #ffffff;
 	cursor: move;
 	transition: 0.075s transform;
@@ -78,11 +82,6 @@
 
 	&.ui-sortable-helper {
 		box-shadow: 0 3px 10px rgba(0,0,0,0.5);
-		-webkit-transform: scale(1.01, 1.01);
-		-moz-transform: scale(1.01, 1.01);
-		-ms-transform: scale(1.01, 1.01);
-		-o-transform: scale(1.01, 1.01);
-		transform: scale(1.01, 1.01);
 	}
 }
 
